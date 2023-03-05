@@ -1,4 +1,4 @@
-package chpt2
+package peterson
 
 import (
 	"sync"

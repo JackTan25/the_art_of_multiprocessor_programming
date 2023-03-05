@@ -30,7 +30,9 @@ type Writer struct {
 
 func (writer *Writer) increment(id int) {
 	writer.lock.Lock(id)
+	// fmt.Println(writer.num, id)
 	writer.num++
+	// fmt.Println(writer.num, id)
 	// fmt.Println(writer.num, writer.lock.flags[id], "id: ", id)
 	writer.lock.Unlock(id)
 	writer.waiter.Done()
@@ -42,18 +44,20 @@ func (writer *Writer) increment(id int) {
 // 都发生在for循环这一步的
 // 读这里的话,就会发生死锁
 func TestLockOne(t *testing.T) {
-	for i := 0; i < 500001; i++ {
+	for i := 0; i < 500004; i++ {
 		writer := &Writer{
 			num: 0,
 			lock: &LockOne{
 				flags: make([]bool, 2),
 			},
 		}
+		require.Equal(t, writer.lock.flags[0], false)
+		require.Equal(t, writer.lock.flags[0], false)
 		writer.waiter.Add(2)
 		go writer.increment(0)
 		go writer.increment(1)
 		writer.waiter.Wait()
-		// fmt.Println("--------------------------------")
-		require.Equal(t, writer.num, 2)
+		// fmt.Println("----")
+		require.Equal(t, 2, writer.num)
 	}
 }
