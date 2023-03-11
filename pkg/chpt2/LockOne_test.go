@@ -1,6 +1,7 @@
 package chpt2
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 
@@ -13,6 +14,7 @@ type LockOne struct {
 
 func (lockone *LockOne) Lock(id int) {
 	lockone.flags[id] = true
+	// _ = lockone.flags[id]
 	for lockone.flags[1-id] {
 	}
 	// fmt.Println("break ", lockone.flags[1-id], "id: ", 1-id)
@@ -31,6 +33,9 @@ type Writer struct {
 func (writer *Writer) increment(id int) {
 	writer.lock.Lock(id)
 	// fmt.Println(writer.num, id)
+	// if !writer.lock.flags[id] {
+	fmt.Println(writer.lock.flags[id])
+	// }
 	writer.num++
 	// fmt.Println(writer.num, id)
 	// fmt.Println(writer.num, writer.lock.flags[id], "id: ", id)
@@ -44,7 +49,7 @@ func (writer *Writer) increment(id int) {
 // 都发生在for循环这一步的
 // 读这里的话,就会发生死锁
 func TestLockOne(t *testing.T) {
-	for i := 0; i < 500004; i++ {
+	for i := 0; i < 500000; i++ {
 		writer := &Writer{
 			num: 0,
 			lock: &LockOne{
