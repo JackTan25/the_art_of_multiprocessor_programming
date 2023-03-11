@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"multiprocesser/pkg/chpt2"
 	"sync"
 	"testing"
 
@@ -74,6 +75,7 @@ func (writer *Writer) increment(id int) {
 
 // 过滤锁算法满足互斥,无饥饿,无死锁
 func TestFilterLock(t *testing.T) {
+	chpt2.Mfence()
 	var n int = 10
 	for i := 0; i < 10000; i++ {
 		writer := &Writer{

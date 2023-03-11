@@ -1,6 +1,7 @@
 package bakery
 
 import (
+	chpt2 "multiprocesser/pkg/chpt2"
 	"sync"
 	"testing"
 
@@ -76,6 +77,7 @@ func (lock *BakeryLock) Unlock(id int) {
 
 func TestBakery(t *testing.T) {
 	var n int = 10
+	chpt2.Mfence()
 	for i := 0; i < 10000; i++ {
 		writer := &Writer{
 			lock: NewBakeryLock(n),
